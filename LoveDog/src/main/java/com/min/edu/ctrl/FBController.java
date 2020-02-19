@@ -26,7 +26,8 @@ import com.min.edu.model.FreeBoard.FB_IService;
 
 @Controller
 public class FBController {
-   // 자유게시판 컨트롤러
+   
+	// 자유게시판 컨트롤러
 	
 	private Logger log = LoggerFactory.getLogger(FBController.class);
 
