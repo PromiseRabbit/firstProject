@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="sarang.hagae">
+
+<resultMap type="Udto" id="loginMap">
+<result column="U_ID" property="u_id"/>
+<result column="U_PASSWORD" property="u_password"/>
+<result column="U_NAME" property="u_name"/>
+<result column="U_EMAIL" property="u_email"/>
+<result column="U_PHONE" property="u_phone"/>
+<result column="U_ENABLE" property="u_enable"/>
+<result column="U_AUTH" property="u_auth"/>
+<result column="F_NAME" property="f_name"/>
+</resultMap>
+
+<!--  로그인  -->
+<select id="loginUser" parameterType="java.util.Map" resultMap="loginMap">
+SELECT U_ID, U_NAME, U_EMAIL, U_ENABLE, U_PHONE, U_AUTH, U_NAME, F_NAME FROM USER_U WHERE U_ID =#{u_id} AND U_PASSWORD=#{u_password} AND U_AUTH=#{u_auth}
+</select>
+
+<!--  회원가입  -->
+<insert id="registUser" parameterType="java.util.Map">
+INSERT INTO USER_U (U_ID, U_PASSWORD, U_NAME, U_EMAIL, U_PHONE, U_ENABLE, U_AUTH, F_NAME) VALUES(#{u_id}, #{u_password}, #{u_name}, #{u_email}, #{u_phone},'Y','U', #{f_name})
+</insert>
+
+<!--  중복검사  -->
+<select id="duplicateidCheck" parameterType="java.lang.String" resultType="java.lang.Integer">
+SELECT COUNT(U_ID) FROM USER_U WHERE U_ID=#{u_id}
+</select>
+</mapper>
+

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="sarang.hagae.reser">
+
+    <!-- 병원 진료 과 조회 -->
+    <select parameterType="java.lang.String" resultType="HSPdto" id="selectHObj">
+        SELECT H.H_REGI, H.MAIN_OBJ,O.OBJ_CODE
+        FROM H_CODE_OBJ H JOIN O_CODE O
+        ON O.MAIN_OBJ=H.MAIN_OBJ
+        WHERE H_REGI=#{h_regi}
+    </select>
+
+
+    <!-- 병원 동물 조회 -->
+    <select parameterType="java.lang.String" resultType="HSPdto" id="selectHAni">
+        SELECT H.H_REGI, H.MAIN_ANI,O.ANI_CODE
+        FROM H_CODE_ANI H JOIN A_CODE O
+        ON O.MAIN_ANI=H.MAIN_ANI
+        WHERE H_REGI=#{h_regi}
+    </select>
+
+
+    <!-- 예약 검색 -->
+    <select parameterType="java.util.Map" resultType="HSPdto" id="serchReser">
+        SELECT H_REGI,H_ADDRESS,H_MAIL,H_NAME,H_PHONE,OBJ_CODE
+        FROM HOSPITAL JOIN H_CODE_OBJ
+        using(H_REGI)join(O_CODE)
+        using(MAIN_OBJ)JOIN OBJ
+        using(MAIN_OBJ)
+        WHERE (H_REGI NOT in (SELECT H_REGI FROM RESERVATION WHERE R_DATE= to_date(#{r_date},'YYYYMMDDHH24MISS')))AND
+        MAIN_OBJ = #{main_obj} AND OBJ_DETAIL_CODE=#{obj_detail_code}
+    </select>
+
+
+    <!-- 예약 추가 -->
+    <insert parameterType="Rdto" id="insertReser">
+        INSERT INTO RESERVATION(SEQ,U_ID,H_REGI,R_STATUS,R_DATE)
+        VALUES(RESERVATION_SEQ.NEXTVAL, #{u_id}, #{h_regi}, 'Y',TO_DATE(#{r_date},'yyyymmddhh24miss'))
+    </insert>
+
+
+    <!-- 예약 삭제 -->
+    <update parameterType="java.util.Map" id="delReser">
+        UPDATE RESERVATION SET R_STATUS='N'
+        WHERE R_STATUS=#{r_status} AND SEQ=#{seq}
+    </update>
+
+
+    <!-- 예약 수정 -->
+    <update parameterType="java.util.Map" id="modifyReser">
+        UPDATE RESERVATIONSET R_DATE=TO_DATE(#{r_date},'yyyymmddhh24miss'),R_CONTENT=#{r_content} WHERE U_ID=#{u_id}
+    </update>
+
+
+    <!-- 전체 진료 과 -->
+    <select resultType="com.min.edu.dto.AllObj_Dto" id="selectAllObj">SELECT * FROM O_CODE</select>
+
+
+    <!-- 진료 상세 -->
+    <select resultType="com.min.edu.dto.AllObj_Dto" id="selectAllODetail">
+        SELECT * FROM OBJ WHERE MAIN_OBJ=#{main_obj}
+    </select>
+
+
+    <!-- 병원 상세조회 -->
+    <select parameterType="java.lang.String" resultType="HSPdto" id="selectOneHospital2">
+        SELECT *FROM HOSPITAL WHERE H_REGI=#{h_regi}
+	    
+    </select>
+
+    <!-- 병원 예약시간 조회 -->
+    <select id="serchR_Date" resultType="Rdto" parameterType="java.lang.String">
+        SELECT TO_CHAR(R_DATE,'YYYYMMDDHH24MISS') R_DATE FROM RESERVATION WHERE H_REGI=#{h_regi}
+    </select>
+
+    <!-- 병원 예약 전체 조회 -->
+    <select id="selectAllHReser" resultType="Rdto" parameterType="java.lang.String">
+        SELECT U.U_ID, R.R_DATE
+        FROM RESERVATION R JOIN USER_U U
+        ON R.U_ID=U.U_ID WHERE R.H_REGI=#{h_regi}
+    </select>
+
+    <!-- 유저 예약 전체 조회 -->
+    <select id="selectAllUReser" resultType="Rdto" parameterType="java.lang.String">
+        SELECT H.H_NAME, R.R_DATE, R.H_REGI, R.R_STATUS, R.SEQ
+        FROM RESERVATION R JOIN HOSPITAL H ON R.H_REGI=H.H_REGI WHERE R.U_ID=#{u_id} AND R.R_STATUS = 'Y'
+
+    </select>
+
+    <!-- 병원  예약 상세 조회-->
+    <select id="selectOneHReser" resultType="Rdto" parameterType="java.lang.String">
+        SELECT U.U_ID, R.R_CONTENT, R.R_DATE, U.U_EMAIL,U.U_PHONE, R.SEQ FROM RESERVATION R JOIN USER_U U ON R.U_ID=U.U_ID
+        WHERE R.H_REGI=#{h_regi}
+
+    </select>
+
+    <!-- 유저 예약 상세 조회 -->
+    <select id="selectOneUReser" resultType="Rdto" parameterType="java.lang.String">
+        SELECT H.H_NAME, R.R_CONTENT, R.R_DATE, H.H_ADDRESS,H.H_MAIL,H.H_PHONE,H.H_REGI FROM RESERVATION R JOIN HOSPITAL
+        H ON R.H_REGI=H.H_REGI R.U_ID=#{u_id}
+    </select>
+
+</mapper>

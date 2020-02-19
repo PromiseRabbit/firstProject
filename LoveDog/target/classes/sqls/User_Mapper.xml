@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="sarang.hagae">
+<update id="UserModify" parameterType="Udto">
+UPDATE USER_U
+ SET U_ID=#{u_id}, U_PASSWORD=#{u_password}, U_EMAIL=#{u_email}, U_PHONE=#{u_phone}
+  WHERE U_ID=#{u_id} AND U_AUTH='U'
+</update>
+
+<update id="DeleteUser" parameterType="java.lang.String">
+UPDATE USER_U
+ SET U_ENABLE='N'
+  WHERE U_ID=#{u_id}
+</update>
+<select id="SelectAlluser" resultType="Udto">
+SELECT U_ID, U_PASSWORD, U_NAME, U_EMAIL, U_PHONE, U_ENABLE, U_AUTH, F_NAME
+ FROM USER_U
+</select>  
+<select id="SelectOneuser" parameterType="java.lang.String" resultType="Udto">
+SELECT U_ID, U_PASSWORD, U_NAME, U_EMAIL, U_PHONE, U_ENABLE, U_AUTH, F_NAME
+ FROM USER_U
+  WHERE U_ID=#{u_id}
+</select> 
+<update id="AuthChange" parameterType="java.util.Map">
+UPDATE USER_U
+ SET U_AUTH='U'
+  WHERE U_ID=#{u_id}
+</update>
+
+</mapper>

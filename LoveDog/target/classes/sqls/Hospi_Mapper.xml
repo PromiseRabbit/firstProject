@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="sarang.hagae">
+
+<!-- 병원 등록 추가 -->
+<insert id="insertHospital" parameterType="HSPdto">
+		INSERT INTO HOSPITAL(H_NAME, H_ADDRESS, H_PHONE, 
+        H_MAIL, H_REGI, U_ID, H_ENABLE)
+     	VALUES(#{h_name}, #{h_address}, #{h_phone}, #{h_mail}, #{h_regi},  #{u_id}, 'Y')
+</insert>
+
+
+<!-- 병원등록 허가 -->
+<update id="updateHospital" parameterType="HSPdto">
+		UPDATE HOSPITAL SET H_ENABLE=#{h_enable} WHERE U_ID=#{u_id}
+</update>
+
+
+<!-- 병원 삭제 -->
+<update id="deleteHospital" parameterType="java.lang.String">
+		UPDATE HOSPITAL SET  H_ENABLE= 'D' WHERE  U_ID =#{u_id}
+</update>
+
+
+<!-- 다중 삭제 -->
+<update id="multiDelHospi" parameterType="java.util.Map">
+		UPDATE HOSPITAL
+		SET DELFLAG = 'Y'
+		WHERE DELFLAG='N' AND SEQ IN
+<foreach collection="seq_" item="seq" open="(" separator="," close=")">
+			#{seq}
+		</foreach>
+</update>
+
+
+<!-- 병원 전체 조회 -->
+<select id="selectAllHospital" resultType="HSPdto">
+		SELECT H_NAME, H_ADDRESS, H_PHONE, H_MAIL, 
+  		H_REGI, U_ID, H_ENABLE 
+      	FROM HOSPITAL
+</select>
+
+
+<!-- 병원 상세조회 -->
+<select id="selectOneHospital" parameterType="java.lang.String"
+			resultType="HSPdto">
+		SELECT  H_NAME, H_ADDRESS, H_PHONE, H_MAIL, 
+  		H_REGI, U_ID, H_ENABLE
+			   FROM HOSPITAL WHERE U_ID = #{u_id}
+</select>
+
+
+<!-- 병원 진료과 상세조회 -->
+<select id="selectOneHobj" parameterType="java.lang.String"
+			resultType="HSPdto">
+		SELECT OBJ_CODE FROM H_CODE_OBJ JOIN O_CODE USING (MAIN_OBJ) 
+		WHERE H_REGI = #{h_regi} GROUP BY OBJ_CODE
+</select>
+
+
+<!-- 병원 진료동물 상세조회 -->
+<select id="selectOneHani" parameterType="java.lang.String"
+			resultType="HSPdto">
+		SELECT ANI_CODE FROM H_CODE_ANI JOIN A_CODE USING (MAIN_ANI) 
+		WHERE H_REGI = #{h_regi} GROUP BY ANI_CODE
+</select>
+
+
+<!-- 병원 정보 수정 -->
+<!-- 사업자등록증, 병원이름, 병원주소, 병원전화번호, 진료과목, 진료동물, 권한 7가지 수정가능 -->
+<update id="modifyHospital" parameterType="HSPdto">
+<!-- 		UPDATE HOSPITAL -->
+<!-- 		SET H_REGI=#{h_regi}, H_NAME=#{h_name}, H_ADDRESS=#{h_address},  -->
+<!-- 		H_PHONE=#{h_phone}, H_MAIL=#{h_mail}, H_ENABLE = #{h_enable} -->
+<!-- 		WHERE U_ID=#{u_id} -->
+	UPDATE HOSPITAL
+	SET  H_NAME=#{h_name}, H_ADDRESS=#{h_address}, 
+	H_PHONE=#{h_phone}, H_MAIL=#{h_mail}, H_ENABLE = #{h_enable}
+	WHERE H_REGI=#{h_regi} AND U_ID=#{u_id}
+</update>
+
+
+<!-- 진료 동물 추가 -->
+<insert id="insertAni" parameterType="HSPdto">
+		INSERT INTO H_CODE_ANI (H_REGI,MAIN_ANI)
+		VALUES(#{h_regi},#{main_ani})
+</insert>
+
+
+<!-- 진료 과 추가 -->
+<insert id="insertObj" parameterType="HSPdto">
+		INSERT INTO H_CODE_OBJ (H_	REGI,MAIN_OBJ)
+		VALUES(#{h_regi},#{main_ani})
+</insert>
+
+
+
+</mapper>

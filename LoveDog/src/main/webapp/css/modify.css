@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+
+a:link, a:visited {text-decoration: none; color: #656565;}
+.board_view {width:50%;border-top:2px solid #252525;border-bottom:1px solid #ccc}
+.board_view tbody th {text-align:left;background:#f7f7f7;color:#3b3a3a}
+.board_view tbody th {font-size:13px;color:#000;letter-spacing:0.1px}
+.board_view tbody th, .board_view tbody td {padding:15px 0 16px 16px;border-bottom:1px solid #ccc}
+.board_view tbody td {border-bottom:1px solid #ccc;padding:20px 50px 20px 50px;}
+.board_view tbody th {padding:0 0 0 30px; vertical-align:middle}  
+
+.btnn{
+	position: relative;
+	left: 330px;
+	top: 40px;
+}
+
+body{
+	position: relative;
+	left: 435px;
+	top: 180px;
+}
+

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="sarang.hagae">
+
+
+<!-- 글 입력 -->
+<insert id="hinsertBoard" parameterType="HBdto">
+INSERT INTO HONGBOARD
+(SEQ, H_REGI, U_ID, TITLE, CONTENT, REFER, STEP, DEPTH, F_NAME, DELFLAG, REGDATE, READCOUNT)
+VALUES(HONGBOARD_SEQ.NEXTVAL,#{h_regi},#{u_id}, #{title}, #{content},(SELECT NVL(MAX(REFER),0)+1 FROM HONGBOARD),
+0,0, #{f_name},'N',SYSDATE,0)
+</insert>
+
+
+<!-- 글 수정 -->
+<update id="hmodifyBoard" parameterType="HBdto">
+UPDATE HONGBOARD
+SET TITLE=#{title} , CONTENT=#{content}	
+WHERE SEQ=#{seq}
+</update>
+
+
+<!-- 글 삭제 -->
+<update id="hdelBoard" parameterType="java.lang.String">
+UPDATE HONGBOARD
+SET DELFLAG = 'Y'
+WHERE SEQ=#{seq}
+</update>
+
+
+<!-- 다중 삭제 -->
+<delete id="hdelflagBoard" parameterType="java.util.Map">
+DELETE FROM HONGBOARD
+	WHERE SEQ IN
+		<foreach collection="seq_" item="seq" open="(" separator="," close=")">
+			#{seq}
+		</foreach>
+</delete>
+
+
+ <!-- 병원정보 게시판 전체글 조회 JOIN -->
+<select id="hallBoard" resultType="HBdto">
+SELECT SEQ, B.H_REGI, B.U_ID, TITLE, CONTENT, REFER, STEP, DEPTH, F_NAME, DELFLAG, REGDATE, READCOUNT
+FROM HOSPITAL H JOIN HONGBOARD B ON
+H.H_REGI = B.H_REGI
+ORDER BY REFER DESC, STEP ASC
+</select>
+
+<!-- 병원정보 게시판 상세글 조회 JOIN -->
+<select id="hdetailBoard" parameterType="java.util.Map" resultType="HBdto">
+SELECT SEQ, B.H_REGI, B.U_ID, TITLE, CONTENT, REFER, STEP, DEPTH, F_NAME, DELFLAG, REGDATE, READCOUNT
+FROM HOSPITAL H JOIN HONGBOARD B ON
+H.H_REGI = B.H_REGI
+WHERE TRIM(H.H_REGI) = TRIM(#{h_regi}) AND B.SEQ =#{seq}
+</select>
+
+
+
+<!-- 답글(UPDATE) -->
+<update id="hreplyUp" parameterType="HBdto">
+UPDATE HONGBOARD
+SET STEP=STEP+1
+WHERE REFER = (SELECT REFER FROM HONGBOARD WHERE SEQ=#{seq})
+AND STEP > (SELECT STEP FROM HONGBOARD WHERE SEQ=#{seq})	
+</update>
+
+
+<!-- 답글 (INSERT) -->
+<insert id="hreplyIn" parameterType="HBdto">
+INSERT INTO HONGBOARD
+(SEQ, H_REGI, U_ID, TITLE, CONTENT, REFER, STEP, DEPTH, DELFLAG, REGDATE, READCOUNT)
+VALUES(HONGBOARD_SEQ.NEXTVAL, #{h_regi},#{u_id}, #{title}, #{content}, (SELECT REFER FROM HONGBOARD 
+WHERE SEQ=#{seq}), (SELECT STEP+1 FROM HONGBOARD WHERE SEQ = #{seq}), 
+(SELECT DEPTH+1 FROM HONGBOARD WHERE SEQ=#{seq}),'N',SYSDATE,0)
+</insert>
+
+
+<!-- 조회수 증가 -->
+<update id="hreadcount" parameterType="java.lang.String">
+UPDATE HONGBOARD
+SET READCOUNT = READCOUNT +1
+WHERE SEQ=#{seq}
+</update>
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

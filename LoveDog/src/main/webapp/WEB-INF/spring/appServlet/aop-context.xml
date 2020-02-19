@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+
+	<bean id="LogAop" class="com.min.edu.aop.AopLogger"/>
+
+
+<!-- 자동으로 작동되는 로그를 작성  aspect, pointcut , joinpoint, advice  -->
+	<aop:config>
+		<aop:pointcut id="aopP"
+			expression="execution(public * com.min.edu.model.*Dao*.*(..))" />
+		<aop:aspect ref="LogAop">
+			<aop:before				method="before" 					pointcut-ref="aopP" />
+			<aop:after-returning 	method="afterReturning"				pointcut-ref="aopP" />
+			<aop:after-throwing 	method="daoException"				pointcut-ref="aopP" />
+		</aop:aspect>
+	</aop:config>
+	
+		
+</beans>

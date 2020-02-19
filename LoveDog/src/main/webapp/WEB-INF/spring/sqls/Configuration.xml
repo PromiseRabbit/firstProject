@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+
+	<typeAliases>
+		<typeAlias type="com.min.edu.dto.FreeBoard_Dto" alias="FBdto"/>
+		<typeAlias type="com.min.edu.dto.HongBoard_Dto" alias="HBdto"/>
+		<typeAlias type="com.min.edu.dto.Hospi_Dto" alias="HSPdto"/>
+		<typeAlias type="com.min.edu.dto.HUser_Dto" alias="HUdto"/>
+		<typeAlias type="com.min.edu.dto.Paging_Dto" alias="Pdto"/>
+		<typeAlias type="com.min.edu.dto.Reserv_Dto" alias="Rdto"/>
+		<typeAlias type="com.min.edu.dto.User_Dto" alias="Udto"/>
+		<typeAlias type="com.min.edu.dto.Obj_Dto" alias="Odto"/>
+		<typeAlias type="com.min.edu.dto.Ani_Dto" alias="Adto"/>
+		
+	</typeAliases>
+   
+   	<mappers>
+   		<mapper resource="/sqls/FB_Mapper.xml"/>
+   		<mapper resource="/sqls/HB_Mapper.xml"/>
+   		<mapper resource="/sqls/Hospi_Mapper.xml"/>
+   		<mapper resource="/sqls/Login_Mapper.xml"/>
+   		<mapper resource="/sqls/Reserv_Mapper.xml"/>
+   		<mapper resource="/sqls/User_Mapper.xml"/>
+   	</mappers>
+
+</configuration>
